@@ -1,8 +1,10 @@
 extern crate rand;
 
-use rand::Rng;
 use std::char::from_u32;
 use std::f32::consts::PI;
+
+use rand::Rng;
+
 fn main() {
     let console_dimensions = [66, 49];
     let squares_per_row = 8;
@@ -13,12 +15,12 @@ fn main() {
     let something = '\u{2813}';
     print!("{}", something);
 
-    fn drawSchotter(usizeimensions: i32, squares_per_row: i32, squares_per_col: i32) {
+    fn draw_schotter(usizeimensions: i32, squares_per_row: i32, squares_per_col: i32) {
         let canvas_width = usizeimensions * 2;
         let padding = if canvas_width > 4 { 2 } else { 0 };
         let square_side: f32 = (canvas_width - padding * 2) as f32 / squares_per_row as f32;
         let canvas_height = (square_side * squares_per_col as f32 * padding as f32 * 2.0) as i32;
-        let RAND_MAX = 2147483647;
+        let rand_max = 2_147_483_647;
         let mut canvas = vec![0; (0) as usize];
         for y in 0..(squares_per_col - 1) {
             for x in 0..(squares_per_row - 1) {
@@ -28,16 +30,16 @@ fn main() {
 
                 let mut angle: f32 = 0.0;
                 if y > 1 {
-                    let mut r1: f32 = rand::thread_rng().gen_range(0, RAND_MAX) as f32
-                        / RAND_MAX as f32
+                    let mut r1: f32 = rand::thread_rng().gen_range(0, rand_max) as f32
+                        / rand_max as f32
                         / squares_per_col as f32
                         * y as f32;
-                    let mut r2: f32 = rand::thread_rng().gen_range(0, RAND_MAX) as f32
-                        / RAND_MAX as f32
+                    let mut r2: f32 = rand::thread_rng().gen_range(0, rand_max) as f32
+                        / rand_max as f32
                         / squares_per_col as f32
                         * y as f32;
-                    let mut r3: f32 = rand::thread_rng().gen_range(0, RAND_MAX) as f32
-                        / RAND_MAX as f32
+                    let mut r3: f32 = rand::thread_rng().gen_range(0, rand_max) as f32
+                        / rand_max as f32
                         / squares_per_col as f32
                         * y as f32;
 
@@ -54,15 +56,15 @@ fn main() {
                     sx += (r2 * square_side) as i32 / 3;
                     sy += (r3 * square_side) as i32 / 3;
                 }
-                drawSquare(&mut canvas, sx, sy, square_side, angle, 1);
+                draw_square(&mut canvas, sx, sy, square_side, angle, 1);
             }
         }
         println!("{:?}", canvas);
     }
 
-    fn createCanvas(canvas_width: i32, canvas_height: i32, color: i32) {}
+    fn create_canvas(canvas_width: i32, canvas_height: i32, color: i32) {}
 
-    fn drawSquare(
+    fn draw_square(
         mut canvas: &mut Vec<i32>,
         x: i32,
         y: i32,
@@ -72,7 +74,7 @@ fn main() {
     ) {
         let mut px: [i32; 4] = [Default::default(); 4];
         let mut py: [i32; 4] = [Default::default(); 4];
-        size = size / 1.4142135623;
+        size /= std::f64::consts::SQRT_2 as f32;
         let size_int = size.round() as i32;
 
         let mut k = PI / 4.0 + angle;
@@ -89,11 +91,11 @@ fn main() {
             let x2 = px[(j + 1) % 4];
             let y2 = py[(j + 1) % 4];
             println!("x2: {}, y2: {}", x2, y2);
-            drawLine(&mut canvas, px[j], py[j], x2, y2, color);
+            draw_line(&mut canvas, px[j], py[j], x2, y2, color);
         }
     }
 
-    fn drawLine(
+    fn draw_line(
         mut canvas: &mut Vec<i32>,
         mut x1: i32,
         mut y1: i32,
@@ -107,10 +109,9 @@ fn main() {
         let sy: i32 = if y1 < y2 { 1 } else { -1 };
         let mut err: i32 = dx - dy;
         let mut e2: i32 = err;
-        let mut mod_canvas = vec![0; (0) as usize];
-        mod_canvas = canvas.clone();
+        let mut mod_canvas = vec![];
         loop {
-            mod_canvas = drawPixel(mod_canvas, x1, y1, color);
+            draw_pixel(&mut mod_canvas, x1, y1, color);
             if x1 == x2 && y1 == y2 {
                 break;
             };
@@ -124,23 +125,20 @@ fn main() {
                 y1 += sy;
             }
         }
-        return canvas;
+        canvas
     }
 
-    fn drawPixel(mut canvas: &mut Vec<i32>, x: i32, y: i32, color: i32) -> &mut std::vec::Vec<i32> {
-        //println!("{},{}", x, y);
+    fn draw_pixel(mut canvas: &mut Vec<i32>, x: i32, y: i32, color: i32) {
         let canvas_width = 66 * 2;
         let canvas_height = 390;
 
-        if (x < 0 || x >= canvas_width || y < 0 || y >= canvas_height) {
+        if x < 0 || x >= canvas_width || y < 0 || y >= canvas_height {
             canvas.push(color);
         }
-        //println!("{:?}", mod_canvas);
-        return canvas;
     }
 
     fn pixel_to_braille(byte: u8) -> i32 {
-        return 2;
+        2
     }
 
     let mut cnt = 2813;
@@ -149,8 +147,8 @@ fn main() {
         for col in row {
             // col: &mut u8
             cnt += 1;
-            let thecharacter = from_u32(0x2800 + 4).unwrap();
-            *col = thecharacter;
+            let character = from_u32(0x2800 + 4).unwrap();
+            *col = character;
         }
     }
 
@@ -173,7 +171,7 @@ fn main() {
     );
     println!("\nGeorg Nees - schotter, plotter on paper, 1968. Jono ver. ");
 
-    drawSchotter(
+    draw_schotter(
         console_dimensions[0] as i32,
         squares_per_row,
         squares_per_col,
