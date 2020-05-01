@@ -21,7 +21,7 @@ fn main() {
         let square_side: f32 = (canvas_width - padding * 2) as f32 / squares_per_row as f32;
         let canvas_height = (square_side * squares_per_col as f32 * padding as f32 * 2.0) as i32;
         let rand_max = 2_147_483_647;
-        let mut canvas = vec![0; (0) as usize];
+        let mut canvas = vec![0; (canvas_width * canvas_width * canvas_height) as usize];
         for y in 0..(squares_per_col - 1) {
             for x in 0..(squares_per_row - 1) {
                 let mut sx: i32 = x * square_side as i32 + square_side as i32 / 2 + padding;
@@ -108,10 +108,9 @@ fn main() {
         let sx: i32 = if x1 < x2 { 1 } else { -1 };
         let sy: i32 = if y1 < y2 { 1 } else { -1 };
         let mut err: i32 = dx - dy;
-        let mut e2: i32 = err;
-        let mut mod_canvas = vec![];
+        let mut e2: i32 = 0;
         loop {
-            draw_pixel(&mut mod_canvas, x1, y1, color);
+            draw_pixel(&mut canvas, x1, y1, color);
             if x1 == x2 && y1 == y2 {
                 break;
             };
@@ -132,8 +131,11 @@ fn main() {
         let canvas_width = 66 * 2;
         let canvas_height = 390;
 
+        let index = x + (y * canvas_width);
+        println!(": {}", index);
         if x < 0 || x >= canvas_width || y < 0 || y >= canvas_height {
-            canvas.push(color);
+            println!("x: {}, Y {}", x, y);
+            canvas[(x + (y * canvas_width)) as usize] = color;
         }
     }
 
