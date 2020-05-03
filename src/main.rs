@@ -14,7 +14,7 @@ fn main() {
         let console_dimensions = [66, 49];
         let canvas_width = usizeimensions * 2;
         let padding = if canvas_width > 4 { 2 } else { 0 };
-        let square_side: f32 = (canvas_width - padding * 2) as f32 / squares_per_row as f32;
+        let square_side: f32 = (canvas_width - padding * 2) as f32 / (squares_per_row as f32 / 1.0);
         let canvas_height = (square_side * squares_per_col as f32 * padding as f32 * 2.0) as i32;
         let rand_max = 2_147_483_647;
         let mut canvas = vec![0; (canvas_width * canvas_height) as usize];
@@ -99,13 +99,13 @@ fn main() {
         x2: i32,
         y2: i32,
         color: i32,
-    ) -> &mut std::vec::Vec<i32> {
+    ) {
         let dx: i32 = (x2 - x1).abs();
         let dy: i32 = (y2 - y1).abs();
         let sx: i32 = if x1 < x2 { 1 } else { -1 };
         let sy: i32 = if y1 < y2 { 1 } else { -1 };
         let mut err: i32 = dx - dy;
-        let mut e2: i32 = 0;
+        let mut e2: i32;
         loop {
             draw_pixel(&mut canvas, x1, y1, color);
             if x1 == x2 && y1 == y2 {
@@ -121,7 +121,6 @@ fn main() {
                 y1 += sy;
             }
         }
-        canvas
     }
 
     fn draw_pixel(mut canvas: &mut Vec<i32>, x: i32, y: i32, color: i32) {
@@ -181,7 +180,7 @@ fn main() {
                 if integer_is_one(get_pixel(canvas, x, y + 3)) {
                     byte |= 1 << 6
                 };
-                if integer_is_one(get_pixel(canvas, x, y + 3)) {
+                if integer_is_one(get_pixel(canvas, x + 1, y + 3)) {
                     byte |= 1 << 7
                 };
                 translate_to_braille(byte, &mut braille_row);
